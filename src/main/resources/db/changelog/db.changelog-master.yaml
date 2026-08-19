@@ -1,4 +1,4 @@
-databaseChangelog:
+databaseChangeLog:
   - changeSet:
       id: 29-06-2026-init-account-table
       author: vadim

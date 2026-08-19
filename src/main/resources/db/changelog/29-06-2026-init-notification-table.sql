@@ -1,7 +1,7 @@
-CREATE TABLE IF NOT EXISTS reminder(
+CREATE TABLE IF NOT EXISTS reminder (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id BIGINT NOT NULL REFERENCE account(id),
+    user_id BIGINT NOT NULL REFERENCES account(id),
     title VARCHAR(255) NOT NULL,
     description VARCHAR(4096),
-    notify_time TIMESTAMP,
+    notify_time TIMESTAMP
 );

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.vadim.dto.AccountCredentialsDto;
 import org.vadim.dto.AuthResponseDto;
 import org.vadim.entity.Account;
@@ -28,7 +29,7 @@ public class AccountServiceImpl implements AccountService {
 
   @Override
   public AuthResponseDto auth(AccountCredentialsDto credentials) {
-    if (!credentials.username().isEmpty()){
+    if (StringUtils.hasText(credentials.username())){
       return authByUsername(credentials);
     }
     return authByEmail(credentials);

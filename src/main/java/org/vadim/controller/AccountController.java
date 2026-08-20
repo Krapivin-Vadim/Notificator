@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.vadim.dto.AccountCredentialsDto;
 import org.vadim.dto.AuthResponseDto;
-import org.vadim.service.AccountService;
+import org.vadim.service.port.AccountService;
 
 @RestController
 @RequestMapping("/account")

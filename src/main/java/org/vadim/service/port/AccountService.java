@@ -1,4 +1,4 @@
-package org.vadim.service;
+package org.vadim.service.port;
 
 import org.vadim.dto.AccountCredentialsDto;
 import org.vadim.dto.AuthResponseDto;

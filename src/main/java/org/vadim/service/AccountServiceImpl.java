@@ -16,11 +16,12 @@ import org.vadim.exception.FailedEmailAuthenticationException;
 import org.vadim.exception.FailedUsernameAuthenticationException;
 import org.vadim.exception.UsernameAlreadyUsedException;
 import org.vadim.repository.AccountRepository;
+import org.vadim.service.port.AccountService;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AccountServiceImpl implements AccountService{
+public class AccountServiceImpl implements AccountService {
 
   private final AccountRepository accountRepository;
   private final PasswordEncoder passwordEncoder;

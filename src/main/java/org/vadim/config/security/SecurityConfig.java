@@ -17,6 +17,7 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
 
     private static final String[] PUBLIC_URLS = {
+            "/health",
             "/account/reg",
             "/account/auth",
             "/swagger-ui/**",

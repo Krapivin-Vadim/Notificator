@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.vadim.config.security.port.JwtService;
 import org.vadim.dto.AccountCredentialsDto;
 import org.vadim.entity.Account;
 import org.vadim.exception.EmailAlreadyUsedException;
@@ -37,6 +38,9 @@ public class AccountServiceTest {
   @Mock
   private AccountRepository accountRepository;
 
+  @Mock
+  private JwtService jwtService;
+
   @InjectMocks
   private AccountServiceImpl accountService;
 
@@ -44,6 +48,12 @@ public class AccountServiceTest {
   void successfulRegistration(){
     Mockito.when(accountRepository.findByUsername(testCredetials.username())).thenReturn(Optional.empty());
     Mockito.when(accountRepository.findByEmail(testCredetials.email())).thenReturn(Optional.empty());
+    Mockito.when(accountRepository.save(Mockito.any(Account.class))).thenAnswer(invocation -> {
+      Account acc = invocation.getArgument(0);
+      acc.setId(testAccount.getId());
+      return acc;
+    });
+    Mockito.when(jwtService.generateToken(Mockito.any())).thenReturn("token");
     accountService.register(testCredetials);
   }
 
@@ -68,6 +78,7 @@ public class AccountServiceTest {
           var encodedPasswd = invocationOnMock.getArgument(1);
           return encodedPasswd.equals(rowPasswd);
         });
+    Mockito.when(jwtService.generateToken(Mockito.any())).thenReturn("token");
     accountService.auth(testCredetials);
   }
 

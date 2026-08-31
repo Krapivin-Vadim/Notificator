@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.Map;
 public class JwtServiceImpl implements JwtService {
 
     private final SecretKey secretKey;
+    @Getter
     private final long jwtExpMs;
 
     JwtServiceImpl(
@@ -62,4 +64,5 @@ public class JwtServiceImpl implements JwtService {
                 .parseSignedClaims(token)
                 .getPayload();
     }
+
 }

@@ -1,7 +1,9 @@
 package org.vadim.exception;
 
-public class InvalidAccessTokenException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class InvalidAccessTokenException extends NotificationServiceException {
   public InvalidAccessTokenException(String message) {
-    super(message);
+    super(message, HttpStatus.UNAUTHORIZED);
   }
 }

@@ -37,9 +37,7 @@ public class JwtServiceImpl implements JwtService {
     public String extractUserId(String token) {
         String accountId = getClaims(token).getSubject();
         if(!StringUtils.hasText(accountId)){
-            String message = "JWT does not contains accountId";
-            log.warn(message);
-            throw new InvalidAccessTokenException(message);
+            throw new InvalidAccessTokenException("JWT does not contains accountId");
         }
         return accountId;
     }

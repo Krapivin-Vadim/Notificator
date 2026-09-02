@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS account (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    username TEXT NOT NULL UNIQUE,
+    email TEXT NOT NULL UNIQUE,
+    telegram TEXT,
+    password_hash TEXT NOT NULL
+);

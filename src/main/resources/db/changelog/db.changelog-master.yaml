@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: 29-06-2026-init-account-table
+      author: vadim
+      changes:
+        - sqlFile:
+            path: 29-06-2026-init-account-table.sql
+            relativeToChangelogFile: true
+
+  - changeSet:
+      id: 29-06-2026-init-notification-table
+      author: vadim
+      changes:
+        - sqlFile:
+            path: 29-06-2026-init-notification-table.sql
+            relativeToChangelogFile: true

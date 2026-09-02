@@ -35,8 +35,12 @@ public class AccountController {
           content = @Content(schema = @Schema(implementation = AuthResponseDto.class))
       ),
       @ApiResponse(
-          responseCode = "401",
+          responseCode = "409",
           description = "Пользователь с таким username/email уже есть"
+      ),
+      @ApiResponse(
+              responseCode = "400",
+              description = "Ошибка валидации"
       )
   })
   public ResponseEntity<AuthResponseDto> register(
@@ -56,6 +60,10 @@ public class AccountController {
       @ApiResponse(
           responseCode = "403",
           description = "Неверные учетные данные пользователя"
+      ),
+      @ApiResponse(
+              responseCode = "400",
+              description = "Ошибка валидации"
       )
   })
   public ResponseEntity<AuthResponseDto> auth(

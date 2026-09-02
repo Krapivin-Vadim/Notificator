@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.vadim.config.security.port.JwtService;
 import org.vadim.dto.AccountCredentialsDto;
 import org.vadim.dto.AuthResponseDto;
 import org.vadim.entity.Account;
@@ -26,7 +28,9 @@ public class AccountServiceImpl implements AccountService {
 
   private final AccountRepository accountRepository;
   private final PasswordEncoder passwordEncoder;
+  private final JwtService jwtService;
 
+  @Transactional
   @Override
   public AuthResponseDto auth(AccountCredentialsDto credentials) {
     if (StringUtils.hasText(credentials.username())){
@@ -66,9 +70,12 @@ public class AccountServiceImpl implements AccountService {
     }
     log.info("Success login attempt for identifier={}", credentials.identifier);
     // todo: You need to return JWT
-    return null;
+    return new AuthResponseDto(
+            jwtService.generateToken(acc.getId().toString())
+    );
   }
 
+  @Transactional
   @Override
   public AuthResponseDto register(AccountCredentialsDto accountCredentials) {
     var username = accountCredentials.username();
@@ -85,8 +92,7 @@ public class AccountServiceImpl implements AccountService {
     acc.setPasswordHash(passwordEncoder.encode(accountCredentials.password()));
     acc.setTelegram(accountCredentials.tg());
     accountRepository.save(acc);
-    // todo: You need to return JWT
-    return new AuthResponseDto("JWT token");
+    return new AuthResponseDto(jwtService.generateToken(acc.getId().toString()));
   }
 
   private record Credentials(

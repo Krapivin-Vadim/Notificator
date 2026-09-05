@@ -1,11 +1,6 @@
 package org.vadim.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -43,6 +38,9 @@ public class Account implements UserDetails {
 
   @Column(name = "password_hash", nullable = false, length = 255)
   String passwordHash;
+
+  @OneToMany(mappedBy = "account")
+  List<Reminder> reminders;
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -11,16 +11,14 @@ import org.vadim.Job.TelegramNotificationJob;
 import org.vadim.Job.port.NotificationJob;
 import org.vadim.config.security.port.SecurityUtils;
 import org.vadim.dto.RemindCreateDto;
-import org.vadim.dto.RemindCreationResponseDto;
 import org.vadim.dto.RemindCreationStatus;
 import org.vadim.entity.Account;
 import org.vadim.entity.Reminder;
 import org.vadim.exception.AccountNotFoundException;
+import org.vadim.exception.RemindCreationException;
 import org.vadim.repository.AccountRepository;
 import org.vadim.repository.ReminderRepository;
 import org.vadim.service.port.ReminderService;
-
-import java.time.Instant;
 
 @Slf4j
 @Service
@@ -35,7 +33,7 @@ public class ReminderServiceImpl implements ReminderService {
 
     @Override
     @Transactional
-    public RemindCreationResponseDto createRemind(RemindCreateDto remindCreateDto) {
+    public void createRemind(RemindCreateDto remindCreateDto) {
         //TODO: Добавь функционал извлечения id пользователя из JWT
         Long accountId = securityUtils.getAccountIdFromToken();
         Account acc = accountRepository.findById(accountId).orElseThrow(() -> new AccountNotFoundException(accountId));
@@ -55,8 +53,8 @@ public class ReminderServiceImpl implements ReminderService {
 
         if(email.equals(telegram) && email.equals(RemindCreationStatus.FAILED)){
             reminderRepository.delete(reminder);
+            throw new RemindCreationException(reminder.getId());
         }
-        return new RemindCreationResponseDto(email, telegram);
     }
 
     private RemindCreationStatus createJob(Reminder reminder,

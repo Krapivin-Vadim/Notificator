@@ -22,10 +22,6 @@ import java.time.OffsetDateTime;
 public class ReminderController {
     private final ReminderService reminderService;
 
-    private final EmailNotificationService notificationService;
-    private final ReminderRepository reminderRepository;
-
-    //TODO: Доработай преобразование OffsetDateTime в Instant
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201",

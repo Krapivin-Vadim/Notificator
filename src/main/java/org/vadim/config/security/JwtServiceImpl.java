@@ -24,7 +24,7 @@ public class JwtServiceImpl implements JwtService {
     @Getter
     private final long jwtExpMs;
 
-    JwtServiceImpl(
+    public JwtServiceImpl(
             @Value("${jwt.secret-key}") String secretKey,
             @Value("${jwt.exp-seconds}") long jwtExpSeconds
     ){

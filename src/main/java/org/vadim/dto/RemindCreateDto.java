@@ -11,14 +11,14 @@ import java.time.OffsetDateTime;
 
 public record RemindCreateDto(
 
-        @Schema(name = "Заголовок напоминания", example = "My simple remind")
+        @Schema(name = "title", description = "Заголовок напоминания", example = "My simple remind")
         @NotBlank(groups = Default.class)
         String title,
 
-        @Schema(name = "Текст/описание напоминания", example = "My very long remind description")
+        @Schema(name = "description", description = "Текст/описание напоминания", example = "My very long remind description")
         String description,
 
-        @Schema(name = "Время напоминания", example = "2026-09-05T00:01:00+03:00")
+        @Schema(name = "remindAt", description = "Время напоминания", example = "2026-09-05T00:01:00+03:00")
         @NotNull(message = "null value is not allowed", groups = NotNullGroup.class)
         @NotificationTimeValidate(groups = Default.class)
         OffsetDateTime remindAt

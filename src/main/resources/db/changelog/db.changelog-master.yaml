@@ -14,3 +14,11 @@ databaseChangeLog:
         - sqlFile:
             path: 29-06-2026-init-notification-table.sql
             relativeToChangelogFile: true
+
+  - changeSet:
+     id: 004-09-2026-init-quartz-tables
+     author: vadim
+     changes:
+       - sqlFile:
+           path: 04-09-2026-init-quartz-tables.sql
+           relativeToChangelogFile: true

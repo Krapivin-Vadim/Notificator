@@ -29,7 +29,7 @@ public class AccountServiceTest {
   );
 
   private final Account testAccount = new Account(
-      1L, testCredetials.username(), testCredetials.email(), testCredetials.tg(), testCredetials.password()
+      1L, testCredetials.username(), testCredetials.email(), testCredetials.tg(), testCredetials.password(), null
   );
 
   @Mock

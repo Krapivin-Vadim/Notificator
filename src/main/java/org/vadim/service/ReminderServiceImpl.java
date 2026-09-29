@@ -34,7 +34,6 @@ public class ReminderServiceImpl implements ReminderService {
     @Override
     @Transactional
     public void createRemind(RemindCreateDto remindCreateDto) {
-        //TODO: Добавь функционал извлечения id пользователя из JWT
         Long accountId = securityUtils.getAccountIdFromToken();
         Account acc = accountRepository.findById(accountId).orElseThrow(() -> new AccountNotFoundException(accountId));
         log.info("User with id={} creates new remind", accountId);

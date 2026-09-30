@@ -9,19 +9,17 @@ import redis.clients.jedis.*;
 public class RedisConfig {
 
     private final HostAndPort hostAndPort;
-    //private final JedisClientConfig redisConfig;
+    private final JedisClientConfig redisConfig;
     private final ConnectionPoolConfig poolConfig;
 
     public RedisConfig(@Value("${redis.host}") String host,
                        @Value("${redis.port}") Integer port,
-                       @Value("${redis.user}") String user,
                        @Value("${redis.password}") String password,
                        @Value("${redis.num-connections}")Integer numConnections) {
         hostAndPort = new HostAndPort(host, port);
-//        redisConfig = DefaultJedisClientConfig.builder()
-//                .user(user)
-//                .password(password)
-//                .build();
+        redisConfig = DefaultJedisClientConfig.builder()
+                .password(password)
+                .build();
         poolConfig = new ConnectionPoolConfig();
         poolConfig.setMaxTotal(numConnections);
     }
@@ -31,7 +29,7 @@ public class RedisConfig {
         return new RedisClient.Builder()
                 .hostAndPort(hostAndPort)
                 .poolConfig(poolConfig)
-                //.clientConfig(redisConfig)
+                .clientConfig(redisConfig)
                 .build();
     }
 }

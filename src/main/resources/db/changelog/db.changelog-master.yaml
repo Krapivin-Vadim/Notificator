@@ -22,3 +22,11 @@ databaseChangeLog:
        - sqlFile:
            path: 04-09-2026-init-quartz-tables.sql
            relativeToChangelogFile: true
+
+  - changeSet:
+      id: 30-09-2026-edit-telegram-column
+      author: vadim
+      changes:
+        - sqlFile:
+            path: 30-09-2026-edit-telegram-column.sql
+            relativeToChangelogFile: true

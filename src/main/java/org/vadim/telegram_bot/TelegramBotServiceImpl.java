@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 import org.vadim.entity.Account;
 import org.vadim.repository.AccountRepository;
 import org.vadim.telegram_bot.port.TelegramBotService;
+import redis.clients.jedis.RedisClient;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -23,12 +24,16 @@ public class TelegramBotServiceImpl implements TelegramBotService {
     private final TelegramClient telegramClient;
     private final ExecutorService threadPool;
     private final String botToken;
+    private final RedisClient redisClient;
+    private final String redisSetKey;
 
     @Override
     public void consume(List<Update> updates) {
         for(Update update : updates){
             TelegramRequestExecutor executor = new TelegramRequestExecutor(
                     accountRepository,
+                    redisClient,
+                    redisSetKey,
                     telegramClient,
                     update);
             threadPool.execute(executor::execute);
@@ -47,12 +52,16 @@ public class TelegramBotServiceImpl implements TelegramBotService {
     @Autowired
     public TelegramBotServiceImpl(AccountRepository accountRepository,
                                   TelegramClient telegramClient,
+                                  RedisClient redisClient,
                                   @Value("${telegram.threads}") Integer numThreads,
-                                  @Value("${telegram.bot.token}") String botToken) {
+                                  @Value("${telegram.bot.token}") String botToken,
+                                  @Value("${redis.auth.set-key}") String redisSetKey) {
         this.accountRepository = accountRepository;
         this.telegramClient = telegramClient;
         threadPool = Executors.newFixedThreadPool(numThreads);
         this.botToken = botToken;
+        this.redisClient = redisClient;
+        this.redisSetKey = redisSetKey;
     }
 
     @Override

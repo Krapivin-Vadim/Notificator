@@ -90,7 +90,6 @@ public class AccountServiceImpl implements AccountService {
     acc.setUsername(username);
     acc.setEmail(email);
     acc.setPasswordHash(passwordEncoder.encode(accountCredentials.password()));
-    acc.setTelegram(accountCredentials.tg());
     accountRepository.save(acc);
     return new AuthResponseDto(jwtService.generateToken(acc.getId().toString()));
   }

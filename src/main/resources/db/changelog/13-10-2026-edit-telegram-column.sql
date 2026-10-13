@@ -1,0 +1,2 @@
+ALTER TABLE account DROP COLUMN telegram;
+ALTER TABLE account ADD COLUMN telegram BIGINT;

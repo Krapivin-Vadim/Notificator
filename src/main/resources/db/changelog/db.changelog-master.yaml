@@ -24,9 +24,9 @@ databaseChangeLog:
            relativeToChangelogFile: true
 
   - changeSet:
-      id: 30-09-2026-edit-telegram-column
+      id: 13-10-2026-edit-telegram-column
       author: vadim
       changes:
         - sqlFile:
-            path: 30-09-2026-edit-telegram-column.sql
+            path: 13-10-2026-edit-telegram-column.sql
             relativeToChangelogFile: true

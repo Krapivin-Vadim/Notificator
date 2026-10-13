@@ -28,17 +28,22 @@ public class TelegramRequestExecutor{
     private static final String MSG = "Your telegram account successfully connected";
     private static final String ERROR_MSG = "Unable to connect your telegram account";
 
+    // Commands
+    private final String AUTH = "/auth";
+    private final String START = "/start";
+
+
     public void execute() {
         if (!update.hasMessage() || !update.getMessage().hasText()){
             return;
         }
         var chatId = update.getMessage().getChatId();
         var message = update.getMessage().getText();
-        if(message.startsWith("/start")){
+        if(message.startsWith(START)){
             start(chatId);
             return;
         }
-        if(message.startsWith("/auth")){
+        if(message.startsWith(AUTH)){
             auth(message, chatId);
             return;
         }

@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.quartz.SchedulerException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +18,7 @@ import org.vadim.service.port.ReminderService;
 
 import java.time.OffsetDateTime;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("remind")
@@ -28,6 +31,17 @@ public class ReminderControllerImpl implements ReminderController {
                                                     @RequestBody RemindCreateDto reminderCreateDto){
         reminderService.createRemind(reminderCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteRemind(Long remindId) {
+        try {
+            reminderService.deleteRemind(remindId);
+        } catch (SchedulerException e) {
+            log.error("Error during deleting quartz jobs", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        return ResponseEntity.ok().build();
     }
 
     /**

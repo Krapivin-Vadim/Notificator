@@ -15,10 +15,14 @@ import org.vadim.dto.RemindCreationStatus;
 import org.vadim.entity.Account;
 import org.vadim.entity.Reminder;
 import org.vadim.exception.AccountNotFoundException;
+import org.vadim.exception.NotEnoughRightsException;
 import org.vadim.exception.RemindCreationException;
+import org.vadim.exception.RemindNotFoundException;
 import org.vadim.repository.AccountRepository;
 import org.vadim.repository.ReminderRepository;
 import org.vadim.service.port.ReminderService;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -44,6 +48,7 @@ public class ReminderServiceImpl implements ReminderService {
         reminder.setNotifyTime(remindCreateDto.remindAt().toInstant());
         log.info("Saving new remind for user {}", accountId);
         reminderRepository.save(reminder);
+        log.debug("New remind created {}", reminder);
 
         var email = createJob(reminder, EmailNotificationJob.class, NotificationType.EMAIL);
         var telegram = acc.getTelegram() != null ?
@@ -52,17 +57,40 @@ public class ReminderServiceImpl implements ReminderService {
 
         if(email.equals(telegram) && email.equals(RemindCreationStatus.FAILED)){
             reminderRepository.delete(reminder);
+            log.debug("Delete new remind due to Quartz scheduler error {}", reminder);
             throw new RemindCreationException(reminder.getId());
         }
+    }
+
+    @Override
+    @Transactional
+    public void deleteRemind(Long remindId) throws SchedulerException {
+        Long userId = securityUtils.getAccountIdFromToken();
+        Reminder reminder = reminderRepository.findById(remindId).orElseThrow(() -> new RemindNotFoundException(remindId));
+        if (!reminder.getAccount().getId().equals(userId)){
+            throw new NotEnoughRightsException();
+        }
+        reminderRepository.delete(reminder);
+        List<JobKey> jobKeys = List.of(
+                buildJobKey(userId, remindId, NotificationType.EMAIL),
+                buildJobKey(userId, remindId, NotificationType.TELEGRAM)
+        );
+        for (JobKey jobKey : jobKeys) {
+            boolean res = scheduler.deleteJob(jobKey);
+            if (!res) {
+                log.warn("Fail during removing job {}", jobKey);
+                continue;
+            }
+            log.info("Successfully deleted job {}", jobKey);
+        }
+        log.info("Remind with id {} was deleted", remindId);
     }
 
     private RemindCreationStatus createJob(Reminder reminder,
                            Class<? extends NotificationJob> notificationJobClass,
                            NotificationType notificationType) {
         log.info("Creating new {} notification job for remind {}", notificationType, reminder.getId());
-        JobKey jobKey = new JobKey(
-                reminder.getId().toString(),
-                reminder.getAccount().getId()+ "_" + notificationType);
+        JobKey jobKey = buildJobKey(reminder.getAccount().getId(), reminder.getId(), notificationType);
 
         TriggerKey triggerKey = new TriggerKey(
                 reminder.getId().toString(),
@@ -86,5 +114,9 @@ public class ReminderServiceImpl implements ReminderService {
             log.error(e.getMessage());
             return RemindCreationStatus.FAILED;
         }
+    }
+
+    private JobKey buildJobKey(Long userId, Long remindId, NotificationType type){
+        return JobKey.jobKey(remindId.toString(), userId.toString() + "_" + type);
     }
 }

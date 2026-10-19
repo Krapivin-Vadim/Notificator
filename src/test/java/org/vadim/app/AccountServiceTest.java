@@ -24,12 +24,11 @@ public class AccountServiceTest {
   private final AccountCredentialsDto testCredetials = new AccountCredentialsDto(
       "USER",
       "user@example.com",
-      "@User",
       "user123"
   );
 
   private final Account testAccount = new Account(
-      1L, testCredetials.username(), testCredetials.email(), testCredetials.tg(), testCredetials.password(), null
+      1L, testCredetials.username(), testCredetials.email(), null, testCredetials.password(), null
   );
 
   @Mock
@@ -101,7 +100,6 @@ public class AccountServiceTest {
         () -> accountService.auth(new AccountCredentialsDto(
         testCredetials.username(),
         testCredetials.email(),
-        testCredetials.tg(),
         "Another password"
     )));
   }
@@ -145,7 +143,6 @@ public class AccountServiceTest {
     return new AccountCredentialsDto(
         null,
         testCredetials.email(),
-        testCredetials.tg(),
         newPassword
     );
   }

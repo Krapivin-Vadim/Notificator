@@ -26,7 +26,6 @@ public class SecurityUtilsTest {
     private final AccountCredentialsDto testCredetials = new AccountCredentialsDto(
             "USER",
             "user@example.com",
-            "@User",
             "user123"
     );
 

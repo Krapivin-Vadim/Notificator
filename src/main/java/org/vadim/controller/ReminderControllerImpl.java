@@ -56,7 +56,7 @@ public class ReminderControllerImpl implements ReminderController {
      * Тестовая ручка. Потом надо удалить
      * @return
      */
-    @PutMapping("/test")
+    @PostMapping("/test")
     public ResponseEntity<Void> createTestRemind(){
         reminderService.createRemind(new RemindCreateDto(
                 "My title",

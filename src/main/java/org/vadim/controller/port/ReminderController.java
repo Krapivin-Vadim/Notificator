@@ -30,7 +30,7 @@ public interface ReminderController {
                     description = "Ошибка создания нотификаций / неизвестная ошибка"
             )
     })
-    @PutMapping("/create")
+    @PostMapping("/create")
     ResponseEntity<Void> createNewRemind(@Validated(value = RemindCreateDto.RemindGroupSequenceValidation.class)
                                                 @RequestBody RemindCreateDto reminderCreateDto);
 

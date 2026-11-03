@@ -6,12 +6,15 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.vadim.controller.port.ReminderController;
 import org.vadim.dto.RemindCreateDto;
+import org.vadim.dto.RemindDto;
+import org.vadim.dto.ReminderFilter;
 import org.vadim.repository.ReminderRepository;
 import org.vadim.service.EmailNotificationService;
 import org.vadim.service.port.ReminderService;
@@ -42,6 +45,11 @@ public class ReminderControllerImpl implements ReminderController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public Page<RemindDto> getRemindList(Integer page, Integer size, ReminderFilter filter) {
+        return reminderService.search(filter, page, size);
     }
 
     /**

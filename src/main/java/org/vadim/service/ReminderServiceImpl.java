@@ -3,6 +3,11 @@ package org.vadim.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.vadim.Job.EmailNotificationJob;
@@ -10,8 +15,7 @@ import org.vadim.Job.NotificationType;
 import org.vadim.Job.TelegramNotificationJob;
 import org.vadim.Job.port.NotificationJob;
 import org.vadim.config.security.port.SecurityUtils;
-import org.vadim.dto.RemindCreateDto;
-import org.vadim.dto.RemindCreationStatus;
+import org.vadim.dto.*;
 import org.vadim.entity.Account;
 import org.vadim.entity.Reminder;
 import org.vadim.exception.AccountNotFoundException;
@@ -21,6 +25,7 @@ import org.vadim.exception.RemindNotFoundException;
 import org.vadim.repository.AccountRepository;
 import org.vadim.repository.ReminderRepository;
 import org.vadim.service.port.ReminderService;
+import org.vadim.spec.ReminderSpecification;
 
 import java.util.List;
 
@@ -29,11 +34,35 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReminderServiceImpl implements ReminderService {
     private final String REMIND_ID_KEY = "remindId";
+    private final int MAX_PAGE_SIZE = 20;
 
     private final AccountRepository accountRepository;
     private final SecurityUtils securityUtils;
     private final ReminderRepository reminderRepository;
     private final Scheduler scheduler;
+
+    @Override
+    public Page<RemindDto> search(ReminderFilter filter, int page, int size) {
+        Long accountId = securityUtils.getAccountIdFromToken();
+
+        Specification<Reminder> specification = Specification
+                .where(ReminderSpecification.belongTo(accountId))
+                .and(ReminderSpecification.titleContains(filter.title()))
+                .and(ReminderSpecification.notifyAfter(filter.after()))
+                .and(ReminderSpecification.notifyBefore(filter.before()));
+
+        ReminderSortField sortField = filter.sortBy() == null
+                ? ReminderSortField.NOTIFY_TIME
+                : filter.sortBy();
+
+        Sort.Direction sortDirection = filter.sortDirection() == null
+                ? Sort.Direction.DESC
+                : filter.sortDirection();
+
+        Sort sort = Sort.by(sortDirection, sortField.getProperty());
+        Pageable pageable = PageRequest.of(page, Math.min(size, MAX_PAGE_SIZE), sort);
+        return reminderRepository.findAll(specification, pageable).map(RemindDto::from);
+    }
 
     @Override
     @Transactional

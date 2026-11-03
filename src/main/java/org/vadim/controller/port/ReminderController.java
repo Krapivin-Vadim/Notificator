@@ -3,13 +3,13 @@ package org.vadim.controller.port;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.constraints.Min;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import org.vadim.dto.RemindCreateDto;
+import org.vadim.dto.RemindDto;
+import org.vadim.dto.ReminderFilter;
 
 public interface ReminderController {
     @ApiResponses(value = {
@@ -54,4 +54,9 @@ public interface ReminderController {
     })
     @DeleteMapping("/{remindId}")
     ResponseEntity<Void> deleteRemind(@PathVariable @Min(1) Long remindId);
+
+    @GetMapping("/list")
+    Page<RemindDto> getRemindList(@RequestParam(defaultValue = "0") @Min(0) Integer page,
+                                  @RequestParam(defaultValue = "20") @Min(1) Integer size,
+                                  @ModelAttribute ReminderFilter filter);
 }

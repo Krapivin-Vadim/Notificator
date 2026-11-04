@@ -29,9 +29,8 @@ import java.time.OffsetDateTime;
 public class ReminderControllerImpl implements ReminderController {
     private final ReminderService reminderService;
 
-    @PutMapping("/create")
-    public ResponseEntity<Void> createNewRemind(@Validated(value = RemindCreateDto.RemindGroupSequenceValidation.class)
-                                                    @RequestBody RemindCreateDto reminderCreateDto){
+    @Override
+    public ResponseEntity<Void> createNewRemind(RemindCreateDto reminderCreateDto){
         reminderService.createRemind(reminderCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

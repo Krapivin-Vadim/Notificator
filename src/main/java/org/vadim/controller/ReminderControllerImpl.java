@@ -6,12 +6,15 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.vadim.controller.port.ReminderController;
 import org.vadim.dto.RemindCreateDto;
+import org.vadim.dto.RemindDto;
+import org.vadim.dto.ReminderFilter;
 import org.vadim.repository.ReminderRepository;
 import org.vadim.service.EmailNotificationService;
 import org.vadim.service.port.ReminderService;
@@ -26,9 +29,8 @@ import java.time.OffsetDateTime;
 public class ReminderControllerImpl implements ReminderController {
     private final ReminderService reminderService;
 
-    @PutMapping("/create")
-    public ResponseEntity<Void> createNewRemind(@Validated(value = RemindCreateDto.RemindGroupSequenceValidation.class)
-                                                    @RequestBody RemindCreateDto reminderCreateDto){
+    @Override
+    public ResponseEntity<Void> createNewRemind(RemindCreateDto reminderCreateDto){
         reminderService.createRemind(reminderCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -44,11 +46,16 @@ public class ReminderControllerImpl implements ReminderController {
         return ResponseEntity.ok().build();
     }
 
+    @Override
+    public Page<RemindDto> getRemindList(Integer page, Integer size, ReminderFilter filter) {
+        return reminderService.search(filter, page, size);
+    }
+
     /**
      * Тестовая ручка. Потом надо удалить
      * @return
      */
-    @PutMapping("/test")
+    @PostMapping("/test")
     public ResponseEntity<Void> createTestRemind(){
         reminderService.createRemind(new RemindCreateDto(
                 "My title",
